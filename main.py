@@ -1,4 +1,5 @@
 import requests
+import requests_cache
 import json 
 import os
 
@@ -10,6 +11,9 @@ steam_API_KEY = "ADD_API_KEY"
 
 MATCH_ID = "ADD_GAME_LIVE"
 STEAM_ID = "ADD_YOUR_ID"
+
+# Creating mechanism of save cache
+requests_cache.install_cache('api_cache', expire_after=3600)
 
 
 baseurl = f"https://api.steampowered.com/ISteamWebAPIUtil/GetSupportedAPIList/v0001/?key={steam_API_KEY}"
