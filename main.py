@@ -2,30 +2,34 @@ import requests
 import requests_cache
 import json 
 import os
+from config import Config
 
 print("This is a test of script for the project Gamming Telemetry for data Analysis")
 
-
-steam_API_KEY = "ADD_API_KEY"
-# baseurl = "https://api.steampowered.com/ISteamNews"
-
-MATCH_ID = "ADD_GAME_LIVE"
-STEAM_ID = "ADD_YOUR_ID"
-
-# Creating mechanism of save cache
-requests_cache.install_cache('api_cache', expire_after=3600)
+# List of access endpoint for different parts of user Steam API
+baseurl1 = "https://api.steampowered.com/ISteamNews"
+baseurl2 = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2"
+baseurl3 = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/"
 
 
-baseurl = f"https://api.steampowered.com/ISteamWebAPIUtil/GetSupportedAPIList/v0001/?key={steam_API_KEY}"
 print("Processing server request")
 
+baseurl = baseurl3
+payload = {
+    "key": Config.API_STEAM,
+    "steamid": Config.ID_STEAM,
+    "include_appinfo": True
+}
+
+print("fetching the data")
 try:
-    response = requests.get(baseurl)
+    response = requests.get(baseurl, params=payload)
 
     if response.status_code == 200:
         data = response.json()
-        for i in range(0,3):
-            print(data['apilist']["interfaces"][i], "\n")
+        games = data['response']['game_count']
+        for i in range(games):
+            print(data['response']['games'][i]['name'])
     else:
         print(f"❌ API Error: {response.status_code}")
         print(f"Server response text: {response.text}")
